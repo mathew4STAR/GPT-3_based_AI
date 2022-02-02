@@ -1,10 +1,10 @@
 import pyttsx3
 import speech_recognition as sr
 import openai as op
+import os
 
 
-key = "insert Open AI API key here "
-op.api_key = key
+op.api_key = os.getenv("OPENAI_API_KEY")
 
 engine = pyttsx3.init()
 engine.setProperty('rate', 150)
@@ -19,7 +19,7 @@ def tell(text):
 def takecommand():
     r = sr.Recognizer()
     with sr.Microphone() as source:
-        print("Listerning...")
+        print("Listening...")
         r.pause_threshold = 1
         audio = r.listen(source)
         try:
@@ -29,25 +29,22 @@ def takecommand():
 
         except Exception as e:
             print("Please repeat")
-            return "None"
+            return "Nothing"
         return query
 
-val = takecommand()
 
+while True:
+    query = takecommand()
+    response = op.Completion.create(
+    engine="text-davinci-001",
+    prompt="The following is a conversation with an AI friend. The friend is helpful, creative, clever, and very friendly.\n\nHuman: " + query + "\nAI: ",
+    temperature=0.9,
+    max_tokens=150,
+    top_p=1,
+    frequency_penalty=0,
+    presence_penalty=0.6,
+    )
 
-response = op.Completion.create(
-  engine="text-davinci-001",
-  prompt=val,
-  temperature=0.9,
-  max_tokens=150,
-  top_p=1,
-  frequency_penalty=0,
-  presence_penalty=0.6,
-)
-
-response = str(response)
-presponse = response.split("\n")[6]
-presponse = presponse.strip( '"text": ')
-
-print(presponse)
-tell(presponse)
+    presponse= response["choices"][0]["text"]
+    print(presponse)
+    tell(presponse)
