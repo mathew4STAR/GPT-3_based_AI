@@ -6,6 +6,4 @@ another module called pyttsx3 which says the reply out loud.
 
 It uses Open-AI's davinci model, though this can be modified in the code.
 
-You will also have to sign up to Open-AI, to generate an API key. 
-
-
+You will also have to sign up to Open-AI, to generate an API key, and then create an Environment variable called `OPENAI_API_KEY` with your API key.
